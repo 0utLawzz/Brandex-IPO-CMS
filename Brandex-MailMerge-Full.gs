@@ -15,10 +15,9 @@
 //
 // AB: Sirf yahan neeche teeno values update karein — poori script
 // automatically nayi value use karegi. Kahin aur ye IDs dobara mat likhein.
-
-var MAIN_FOLDER_ID   = "1R-cQ1qYLat0DlnYKs699kXBX0zr7BZDP"; // Apni Drive ka MAIN folder ID (jahan client folders banti hain)
-var TM1_TEMPLATE_ID  = "1STwQUmtknPf1TcWuK1YtEib1ZWiM1yN3tyILlVGwglg"; // TM-1 Google Doc template ki ID
-var TM48_TEMPLATE_ID = "1HyQyz-_tMFIy1X1bH0-sAToZmE2QJL5NFhGUwI_vLgE"; // TM-48 Google Doc template ki ID
+var MAIN_FOLDER_ID   = "1PI-Znj4HIm6SJ0fNeUeK_p01iUckTg8H"; // Apni Drive ka MAIN folder ID (jahan client folders banti hain)
+var TM1_TEMPLATE_ID  = "1XE42w12VjBMUW7jdvRU-HHdhmFd6yTB7HtL6H27FCnE"; // TM-1 Google Doc template ki ID
+var TM48_TEMPLATE_ID = "1EDAbs37UZekCrrNn3JKYWZcjMiuBW6bDUsfTg5AVAhc"; // TM-48 Google Doc template ki ID
 
 // ─────────────────────────────────────────────────────────────────────
 // MENU
@@ -291,7 +290,7 @@ function processRow(sheet, row, mainFolderId, tm1TemplateId, tm48TemplateId) {
 // getRowData
 // ============================================================
 function getRowData(sheet, row) {
-  var range  = sheet.getRange(row, 1, 1, 22); // FIX: 21 → 22 (naya FILING PROCESS col shamil karne ke liye)
+  var range  = sheet.getRange(row, 1, 1, 21);
   var values = range.getValues()[0];
 
   var dateVal = values[5];
@@ -340,7 +339,6 @@ function getRowData(sheet, row) {
     conAdd:     values[18],
     img:        values[19],
     noImg:      values[20] || "[NO IMAGE PROVIDED]",
-    filingProcess: values[21] || "PENDING", // NEW: Col V — sheet-side manual tracker
     goodsServices: goodsServices
   };
 }
@@ -494,13 +492,12 @@ function setupSpreadsheet() {
     "CLASS", "CLASS-DESC", "APP-TYPE", "APP-NAME",
     "APP-SO", "APP-CNIC", "ISSUE-DATE", "EXPIRY-DATE",
     "APP-TRADE", "APP-ADD", "YEAR", "CON-NAME", "CON-ADD",
-    "IMG", "NO-IMG",
-    "FILING PROCESS" // NEW: Col V (22) — manual tracking dropdown, sheet-side only
+    "IMG", "NO-IMG"
   ];
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   sheet.getRange(1, 1, 1, headers.length)
     .setBackground("#1a1a2e").setFontColor("#e94560").setFontWeight("bold");
-  SpreadsheetApp.getUi().alert("Setup Complete", "✅ Headers set (22 columns A–V).", SpreadsheetApp.getUi().ButtonSet.OK);
+  SpreadsheetApp.getUi().alert("Setup Complete", "✅ Headers set (21 columns A–U).", SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
 
@@ -520,25 +517,10 @@ function setupDropdowns() {
     sheet.getRange(2, 9, lastRow - 1, 1).setDataValidation(
       SpreadsheetApp.newDataValidation().requireValueInList(["SOLE PROPRIETOR", "PARTNERS", "A PAKISTANI COMPANY"]).setAllowInvalid(false).build()
     );
-    // NEW: CLASS column (G) ko bhi 1–45 tak dropdown de diya, taake koi seedha
-    // sheet mein galat/typo class number na daal sakay (form se to ye ab
-    // select se hi aata hai, ye sirf sheet-side manual edit ke liye safety hai).
-    var classNumbers = [];
-    for (var c = 1; c <= 45; c++) classNumbers.push(c.toString());
-    sheet.getRange(2, 7, lastRow - 1, 1).setDataValidation(
-      SpreadsheetApp.newDataValidation().requireValueInList(classNumbers).setAllowInvalid(true).build()
-    );
-    // FIX: YEAR ab "manual entry" allow karta hai (form mein bhi free-type hai) —
-    // is liye list sirf SUGGESTION ke tor par hai, setAllowInvalid(true) taake
-    // koi bhi saal (purana ya naya) sheet mein bhi likha ja sakay.
     sheet.getRange(2, 17, lastRow - 1, 1).setDataValidation(
-      SpreadsheetApp.newDataValidation().requireValueInList(["2020","2021","2022", "2023", "2024", "2025", "2026", "2027", "2028"]).setAllowInvalid(true).build()
+      SpreadsheetApp.newDataValidation().requireValueInList(["2022", "2023", "2024", "2025", "2026"]).setAllowInvalid(false).build()
     );
-    // NEW: FILING PROCESS (Col V / 22) — manual status tracker, default "PENDING"
-    sheet.getRange(2, 22, lastRow - 1, 1).setDataValidation(
-      SpreadsheetApp.newDataValidation().requireValueInList(["PENDING", "DISPATCHED 📬", "REVIEW", "CANCELED"]).setAllowInvalid(false).build()
-    );
-    SpreadsheetApp.getUi().alert("Dropdowns Ready", "✅ Dropdowns set (incl. CLASS 1–45 and FILING PROCESS).", SpreadsheetApp.getUi().ButtonSet.OK);
+    SpreadsheetApp.getUi().alert("Dropdowns Ready", "✅ Dropdowns set.", SpreadsheetApp.getUi().ButtonSet.OK);
   } catch (error) {
     SpreadsheetApp.getUi().alert("Error", "❌ " + error.message, SpreadsheetApp.getUi().ButtonSet.OK);
   }
@@ -607,10 +589,9 @@ function processFormSubmission(data) {
     data.issueDate || "", data.expiryDate || "", data.appTrade || "",
     data.appAdd || "", data.year || "", data.conName || "", data.conAdd || "",
     "", // T - imageId filled after upload into client folder
-    data.noImg || "[NO IMAGE PROVIDED]",
-    "PENDING" // V - FILING PROCESS default (naye submissions hamesha PENDING se start)
+    data.noImg || "[NO IMAGE PROVIDED]"
   ];
-  sheet.getRange(lastRow, 1, 1, 22).setValues([rowValues]); // FIX: 21 → 22 columns
+  sheet.getRange(lastRow, 1, 1, 21).setValues([rowValues]);
 
   sheet.getRange(lastRow, 1).setValue("ON IT 👉");
   SpreadsheetApp.flush();

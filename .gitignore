@@ -1,0 +1,12 @@
+# Chat export reference files (session logs, not part of the repo)
+Claude-*.json
+*.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/
+.idea/

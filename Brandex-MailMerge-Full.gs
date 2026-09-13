@@ -1,3 +1,9 @@
+/** @OnlyCurrentDoc */
+// ↑ SECURITY: Restricts this script's Sheets/Docs authorization scope to
+// ONLY this bound spreadsheet (instead of every Sheet/Doc in the user's
+// Drive). Does not affect DriveApp calls to the template/folder IDs below —
+// those still work exactly as before. Safer + faster to authorize.
+
 // ═════════════════════════════════════════════════════════════════════
 // BRANDEX LAW ASSOCIATES — FULL MAILMERGE + WEB FORM HANDLER
 // Copy this ENTIRE file into your Google Apps Script project
@@ -20,11 +26,125 @@ var TM1_TEMPLATE_ID  = "1XE42w12VjBMUW7jdvRU-HHdhmFd6yTB7HtL6H27FCnE"; // TM-1 G
 var TM48_TEMPLATE_ID = "1HyQyz-_tMFIy1X1bH0-sAToZmE2QJL5NFhGUwI_vLgE"; // TM-48 Google Doc template ki ID
 
 // ─────────────────────────────────────────────────────────────────────
+// CLASS / CONSULTANT MASTER DATA — mirrored from trademark-application.html
+// ─────────────────────────────────────────────────────────────────────
+// NOTE: Ye wahi CLASS_DATA/CONSULTANT_DATA arrays hain jo web form
+// (trademark-application.html) mein bhi hain. Web form JavaScript mein
+// chalta hai (browser), ye copy Apps Script (server) mein chalti hai —
+// isi liye do jagah rakhni pariti hain. AGAR KABHI CLASS YA CONSULTANT
+// LIST UPDATE KAREIN, DONO JAGAH (html + is file) UPDATE KAREIN.
+var CLASS_DATA = [
+  {n:1,type:'GOODS',desc:'Chemicals for use in industry, science and photography, as well as in agriculture, horticulture and forestry; unprocessed artificial resins, unprocessed plastics; fire extinguishing and fire prevention compositions; tempering and soldering preparations; substances for tanning animal skins and hides; adhesives for use in industry; putties and other paste fillers; compost, manures, fertilizers; biological preparations for use in industry and science.'},
+  {n:2,type:'GOODS',desc:'Paints, varnishes, lacquers; preservatives against rust and against deterioration of wood; colorants, dyes; inks for printing, marking and engraving; raw natural resins; metals in foil and powder form for use in painting, decorating, printing and art.'},
+  {n:3,type:'GOODS',desc:'Non-medicated cosmetics and toiletry preparations; non-medicated dentifrices; perfumery, essential oils; bleaching preparations and other substances for laundry use; cleaning, polishing and abrasive preparations.'},
+  {n:4,type:'GOODS',desc:'Industrial oils and greases, wax; lubricants; dust absorbing, wetting and binding compositions; fuels and illuminants; candles and wicks for lighting.'},
+  {n:5,type:'GOODS',desc:'Pharmaceuticals, medical and veterinary preparations; sanitary preparations for medical purposes; dietetic food and substances adapted for medical or veterinary use, food for babies; dietary supplements for human beings and animals; plasters, materials for dressings; material for stopping teeth, dental wax; disinfectants; preparations for destroying vermin; fungicides, herbicides.'},
+  {n:6,type:'GOODS',desc:'Common metals and their alloys, ores; metal materials for building and construction; transportable buildings of metal; non-electric cables and wires of common metal; small items of metal hardware; metal containers for storage or transport; safes.'},
+  {n:7,type:'GOODS',desc:'Machines, machine tools, power-operated tools; motors and engines, except for land vehicles; machine coupling and transmission components, except for land vehicles; agricultural implements, other than hand-operated hand tools; incubators for eggs; automatic vending machines.'},
+  {n:8,type:'GOODS',desc:'Hand tools and implements, hand-operated; cutlery; side arms, except firearms; razors.'},
+  {n:9,type:'GOODS',desc:'Scientific, research, navigation, surveying, photographic, cinematographic, audiovisual, optical, weighing, measuring, signalling, detecting, testing, inspecting, life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling the distribution or use of electricity; apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; recorded and downloadable media, computer software, blank digital or analogue recording and storage media; mechanisms for coin-operated apparatus; cash registers, calculating devices; computers and computer peripheral devices; diving suits, divers\' masks, ear plugs for divers, nose clips for divers and swimmers, gloves for divers, breathing apparatus for underwater swimming; fire-extinguishing apparatus.'},
+  {n:10,type:'GOODS',desc:'Surgical, medical, dental and veterinary apparatus and instruments; artificial limbs, eyes and teeth; orthopaedic articles; suture materials; therapeutic and assistive devices adapted for persons with disabilities; massage apparatus; apparatus, devices and articles for nursing infants; sexual activity apparatus, devices and articles.'},
+  {n:11,type:'GOODS',desc:'Apparatus and installations for lighting, heating, cooling, steam generating, cooking, drying, ventilating, water supply and sanitary purposes.'},
+  {n:12,type:'GOODS',desc:'Vehicles; apparatus for locomotion by land, air or water.'},
+  {n:13,type:'GOODS',desc:'Firearms; ammunition and projectiles; explosives; fireworks.'},
+  {n:14,type:'GOODS',desc:'Precious metals and their alloys; jewellery, precious and semi-precious stones; horological and chronometric instruments.'},
+  {n:15,type:'GOODS',desc:'Musical instruments; music stands and stands for musical instruments; conductors\' batons.'},
+  {n:16,type:'GOODS',desc:'Paper and cardboard; printed matter; bookbinding material; photographs; stationery and office requisites, except furniture; adhesives for stationery or household purposes; drawing materials and materials for artists; paintbrushes; instructional and teaching materials; plastic sheets, films and bags for wrapping and packaging; printers\' type, printing blocks.'},
+  {n:17,type:'GOODS',desc:'Unprocessed and semi-processed rubber, gutta-percha, gum, asbestos, mica and substitutes for all these materials; plastics and resins in extruded form for use in manufacture; packing, stopping and insulating materials; flexible pipes, tubes and hoses, not of metal.'},
+  {n:18,type:'GOODS',desc:'Leather and imitations of leather; animal skins and hides; luggage and carrying bags; umbrellas and parasols; walking sticks; whips, harness and saddlery; collars, leashes and clothing for animals.'},
+  {n:19,type:'GOODS',desc:'Materials, not of metal, for building and construction; rigid pipes, not of metal, for building; asphalt, pitch, tar and bitumen; transportable buildings, not of metal; monuments, not of metal.'},
+  {n:20,type:'GOODS',desc:'Furniture, mirrors, picture frames; containers, not of metal, for storage or transport; unworked or semi-worked bone, horn, whalebone or mother-of-pearl; shells; meerschaum; yellow amber.'},
+  {n:21,type:'GOODS',desc:'Household or kitchen utensils and containers; cookware and tableware, except forks, knives and spoons; combs and sponges; brushes, except paintbrushes; brush-making materials; articles for cleaning purposes; unworked or semi-worked glass, except building glass; glassware, porcelain and earthenware.'},
+  {n:22,type:'GOODS',desc:'Ropes and string; nets; tents and tarpaulins; awnings of textile or synthetic materials; sails; sacks for the transport and storage of materials in bulk; padding, cushioning and stuffing materials, except of paper, cardboard, rubber or plastics; raw fibrous textile materials and substitutes therefor.'},
+  {n:23,type:'GOODS',desc:'Yarns and threads for textile use.'},
+  {n:24,type:'GOODS',desc:'Textiles and substitutes for textiles; household linen; curtains of textile or plastic.'},
+  {n:25,type:'GOODS',desc:'Clothing, footwear, headwear.'},
+  {n:26,type:'GOODS',desc:'Lace, braid and embroidery, and haberdashery ribbons and bows; buttons, hooks and eyes, pins and needles; artificial flowers; hair decorations; false hair.'},
+  {n:27,type:'GOODS',desc:'Carpets, rugs, mats and matting, linoleum and other materials for covering existing floors; wall hangings, not of textile.'},
+  {n:28,type:'GOODS',desc:'Games, toys and playthings; video game apparatus; gymnastic and sporting articles; decorations for Christmas trees.'},
+  {n:29,type:'GOODS',desc:'Meat, fish, poultry and game; meat extracts; preserved, frozen, dried and cooked fruits and vegetables; jellies, jams, compotes; eggs; milk, cheese, butter, yogurt and other milk products; oils and fats for food.'},
+  {n:30,type:'GOODS',desc:'Coffee, tea, cocoa and substitutes therefor; rice, pasta and noodles; tapioca and sago; flour and preparations made from cereals; bread, pastries and confectionery; chocolate; ice cream, sorbets and other edible ices; sugar, honey, treacle; yeast, baking powder; salt, seasonings, spices, preserved herbs; vinegar, sauces and other condiments; ice (frozen water).'},
+  {n:31,type:'GOODS',desc:'Raw and unprocessed agricultural, aquacultural, horticultural and forestry products; raw and unprocessed grains and seeds; fresh fruits and vegetables, fresh herbs; natural plants and flowers; bulbs, seedlings and seeds for planting; live animals; foodstuffs and beverages for animals; malt.'},
+  {n:32,type:'GOODS',desc:'Beers; non-alcoholic beverages; mineral and aerated waters; fruit beverages and fruit juices; syrups and other preparations for making non-alcoholic beverages.'},
+  {n:33,type:'GOODS',desc:'Alcoholic beverages, except beers; alcoholic preparations for making beverages.'},
+  {n:34,type:'GOODS',desc:'Tobacco and tobacco substitutes; cigarettes and cigars; electronic cigarettes and oral vaporizers for smokers; smokers\' articles; matches.'},
+  {n:35,type:'SERVICES',desc:'Advertising; business management, organization and administration; office functions.'},
+  {n:36,type:'SERVICES',desc:'Financial, monetary and banking services; insurance services; real estate services.'},
+  {n:37,type:'SERVICES',desc:'Construction services; installation and repair services; mining extraction, oil and gas drilling.'},
+  {n:38,type:'SERVICES',desc:'Telecommunications services.'},
+  {n:39,type:'SERVICES',desc:'Transport; packaging and storage of goods; travel arrangement.'},
+  {n:40,type:'SERVICES',desc:'Treatment of materials; recycling of waste and trash; air purification and treatment of water; printing services; food and drink preservation.'},
+  {n:41,type:'SERVICES',desc:'Education; providing of training; entertainment; sporting and cultural activities.'},
+  {n:42,type:'SERVICES',desc:'Scientific and technological services and research and design relating thereto; industrial analysis, industrial research and industrial design services; quality control and authentication services; design and development of computer hardware and software.'},
+  {n:43,type:'SERVICES',desc:'Services for providing food and drink; temporary accommodation.'},
+  {n:44,type:'SERVICES',desc:'Medical services; veterinary services; hygienic and beauty care for human beings or animals; agriculture, aquaculture, horticulture and forestry services.'},
+  {n:45,type:'SERVICES',desc:'Legal services; security services for the physical protection of tangible property and individuals; dating services, online social networking services; funerary services; babysitting.'}
+];
+
+var CONSULTANT_DATA = [
+  {name:"JAN ONLINE SERVICES/ADISTAAN", addr:"OPPOSITE GRASSY GROUND, SAIDU SHARIF, SWAT CELL # 0307-9118062, 0343-9832412"},
+  {name:"BRANDEX LAW ASSOCIATES", addr:"DROP AT ABDULLAH CENTRE, JUNEJO COLONY BEHIND PTCL EXCHANGE, TARLAI, ISLAMABAD CELL # 03360015004"},
+  {name:"NOOR BAAF LAW ASSOCIATES", addr:"PROPERTY NO.1284, CHOWK FAROOQ-E-AZAM, COLONY NO.1, KHANEWAL 03006339721"},
+  {name:"AZIZ LAW ASSOCIATES", addr:"OFFICE NO 1, AL-GHURAIR GIGA PAKISTAN (PVT LTD), DHA 2, ISLAMABAD"},
+  {name:"MS TAX & FINANCE CONSULTANT", addr:"OFFICE # FF-275 & FF-183, DEANS TRADE CENTER OPPOSITE STATE BANK PESHAWAR CANTT CELL # 03149090397, 03349027935"},
+  {name:"MS BRAND EXPERTS (PVT.) LIMITED", addr:"OFFICE NO 06-07,1ST FLOOR, WALAYAT PLAZA REHMANABAD, MURREE ROAD, RAWALPINDI PHONE # 051-4932363"},
+  {name:"KK CONSULTANT SMC-PVT LIMITED", addr:"LG 25, MIDCITY MALL, MURREE ROAD RWALPINDI. PH: 03349590247"},
+  {name:"SHEIKH LAW ASSOCIATES", addr:"DROP AT ABDULLAH CENTRE, JUNEJO COLONY BEHIND PTCL EXCHANGE, TARLAI, ISLAMABAD CELL # +92 303 2200723"},
+  {name:"M. TARIQ SHAIKH LAW FIRM", addr:"DROP AT ABDULLAH CENTRE, JUNEJO COLONY BEHIND PTCL EXCHANGE, TARLAI, ISLAMABAD CELL # 03360015004"},
+  {name:"CONSULTANCYFIN", addr:"FLAT # D905, GREY NOOR TOWER, SCHEME 33, KARACHI"},
+  {name:"M/S. SOLUTION LEGACY", addr:"F-173/2. MARTIN ROAD KARACHI PH +92 335 4522225"},
+  {name:"M/S. BRAND EXPERTS (PVT.) LIMITED", addr:"OFFICE NO 06-07,1ST FLOOR, WALAYAT PLAZA REHMANABAD, MURREE ROAD, RAWALPINDI PHONE # 051-4932363"},
+  {name:"S.A.T.H CONSULTANTS", addr:"DROP AT ABDULLAH CENTRE, JUNEJO COLONY BEHIND PTCL EXCHANGE, TARLAI, ISLAMABAD CELL # 03360015004"},
+  {name:"BADAR CONSULTANTS", addr:"OPPOSITE GRASSY GROUND, SAIDU SHARIF, SWAT CELL # 0307-9118062, 0343-9832412"},
+  {name:"MS HAFIZ M. ALI WARRAICH", addr:"DROP AT ABDULLAH CENTRE, JUNEJO COLONY BEHIND PTCL EXCHANGE, TARLAI, ISLAMABAD CELL # 03360015004"},
+  {name:"TAXATIONIST CORPORATE CONSULTANTS", addr:"DROP AT ABDULLAH CENTRE, JUNEJO COLONY BEHIND PTCL EXCHANGE, TARLAI, ISLAMABAD CELL # 03360015004"},
+  {name:"MUHAMMAD ADNAN BIN YOUSAF ASSOCIATES", addr:"OFFICE # 6, LOWER GROUND FLOOR, MEDIACOM TRADE CITY, JARANWALA ROAD, FAISALABAD 03006933982"}
+];
+
+// FILING PROCESS (Column V) — manual office-tracking status, independent
+// of the automation's STATUS column (A). Never written by the script
+// except as the default "PENDING" on a brand-new submission.
+var FILING_PROCESS_OPTIONS = ["PENDING", "DISPATCHED 📬", "REVIEW", "REJECTED ❌"];
+
+
+// ─────────────────────────────────────────────────────────────────────
+// onEdit — Auto-fill trigger (Simple Trigger, runs automatically)
+// ─────────────────────────────────────────────────────────────────────
+// PURPOSE: Agar koi row seedha Sheet mein (web form ke bagair) bhari
+// jaye, to CLASS (col G) ya CON-NAME (col R) select karte hi is se
+// matching CLASS-DESC (col H) / CON-ADD (col S) khud-ba-khud bhar jati
+// hai — bilkul web form jaisa behavior, ab Sheet ke andar bhi.
+function onEdit(e) {
+  try {
+    var range = e.range;
+    var sheet = range.getSheet();
+    if (sheet.getName() !== "Sheet1") return;
+    if (range.getNumRows() > 1 || range.getNumColumns() > 1) return; // ek waqt mein sirf single-cell edits handle karo
+
+    var row = range.getRow();
+    var col = range.getColumn();
+    if (row < 2) return; // header row ignore
+
+    if (col === 7) { // G = CLASS
+      var classNum = parseInt(range.getValue().toString().replace(/\D/g, ""), 10);
+      var match = CLASS_DATA.filter(function (c) { return c.n === classNum; })[0];
+      sheet.getRange(row, 8).setValue(match ? match.desc.toUpperCase() : ""); // H = CLASS-DESC
+    } else if (col === 18) { // R = CON-NAME
+      var name = range.getValue().toString().trim();
+      var found = CONSULTANT_DATA.filter(function (c) { return c.name === name; })[0];
+      if (found) sheet.getRange(row, 19).setValue(found.addr); // S = CON-ADD
+    }
+  } catch (err) {
+    Logger.log("onEdit error: " + err);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────
 // MENU
 // ─────────────────────────────────────────────────────────────────────
 function onOpen() {
   SpreadsheetApp.getUi()
-    .createMenu('🛠️ TOOLS')
+    .createMenu('📋 TRADEMARK TOOLS') // NEW: sheet-related icon (pehle generic 🛠️ TOOLS tha)
     .addItem("📊 Setup Headers",    "setupSpreadsheet")
     .addItem("🔽 Setup Dropdowns",  "setupDropdowns")
     .addSeparator()
@@ -492,12 +612,39 @@ function setupSpreadsheet() {
     "CLASS", "CLASS-DESC", "APP-TYPE", "APP-NAME",
     "APP-SO", "APP-CNIC", "ISSUE-DATE", "EXPIRY-DATE",
     "APP-TRADE", "APP-ADD", "YEAR", "CON-NAME", "CON-ADD",
-    "IMG", "NO-IMG"
+    "IMG", "NO-IMG",
+    "FILING PROCESS" // NEW: column V — manual office tracking (see FILING_PROCESS_OPTIONS)
   ];
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+
+  // ── Heading style ──
   sheet.getRange(1, 1, 1, headers.length)
-    .setBackground("#1a1a2e").setFontColor("#e94560").setFontWeight("bold");
-  SpreadsheetApp.getUi().alert("Setup Complete", "✅ Headers set (21 columns A–U).", SpreadsheetApp.getUi().ButtonSet.OK);
+    .setBackground("#1a1a2e").setFontColor("#e94560").setFontWeight("bold")
+    .setFontFamily("Ysabeau SC"); // heading font
+  sheet.setFrozenRows(1);
+
+  // ── Body style: font + left align + clip (no wrap, no overflow) ──
+  var maxRows = Math.max(sheet.getMaxRows(), 500);
+  var bodyRange = sheet.getRange(2, 1, maxRows - 1, headers.length);
+  bodyRange
+    .setFontFamily("Times New Roman")
+    .setHorizontalAlignment("left")
+    .setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
+
+  // ── Conditional formatting: ERROR ❌ row → light red ──
+  var errorRule = SpreadsheetApp.newConditionalFormatRule()
+    .whenFormulaSatisfied('=$A2="ERROR ❌"')
+    .setBackground("#fde2e2") // light red
+    .setRanges([sheet.getRange(2, 1, maxRows - 1, headers.length)])
+    .build();
+  var rules = sheet.getConditionalFormatRules().filter(function (r) {
+    // purane isi tarah ke rule ko dobara add hone se roko (Setup Headers dobara chalane par)
+    return r.getRanges()[0].getA1Notation() !== errorRule.getRanges()[0].getA1Notation();
+  });
+  rules.push(errorRule);
+  sheet.setConditionalFormatRules(rules);
+
+  sheet.toast("Headers, fonts, aur ERROR row-highlight set ho gaye.", "✅ Setup Complete", 5);
 }
 
 
@@ -514,13 +661,35 @@ function setupDropdowns() {
     sheet.getRange(2, 2, lastRow - 1, 1).setDataValidation(
       SpreadsheetApp.newDataValidation().requireValueInList(["STAGE 1"]).setAllowInvalid(false).build()
     );
+
+    // NEW: CLASS (col G) — sirf valid Nice Classification numbers (1–45).
+    // Select karte hi onEdit() trigger CLASS-DESC (col H) khud bhar dega.
+    var classNumbers = CLASS_DATA.map(function (c) { return c.n.toString(); });
+    sheet.getRange(2, 7, lastRow - 1, 1).setDataValidation(
+      SpreadsheetApp.newDataValidation().requireValueInList(classNumbers).setAllowInvalid(false).build()
+    );
+
     sheet.getRange(2, 9, lastRow - 1, 1).setDataValidation(
       SpreadsheetApp.newDataValidation().requireValueInList(["SOLE PROPRIETOR", "PARTNERS", "A PAKISTANI COMPANY"]).setAllowInvalid(false).build()
     );
     sheet.getRange(2, 17, lastRow - 1, 1).setDataValidation(
       SpreadsheetApp.newDataValidation().requireValueInList(["2022", "2023", "2024", "2025", "2026"]).setAllowInvalid(false).build()
     );
-    SpreadsheetApp.getUi().alert("Dropdowns Ready", "✅ Dropdowns set.", SpreadsheetApp.getUi().ButtonSet.OK);
+
+    // NEW: CON-NAME (col R) — list ke consultants suggest karta hai, lekin
+    // manual/naya consultant bhi type kiya ja sakta hai (allowInvalid: true).
+    // Select karte hi onEdit() trigger CON-ADD (col S) khud bhar dega.
+    var consultantNames = CONSULTANT_DATA.map(function (c) { return c.name; });
+    sheet.getRange(2, 18, lastRow - 1, 1).setDataValidation(
+      SpreadsheetApp.newDataValidation().requireValueInList(consultantNames).setAllowInvalid(true).build()
+    );
+
+    // NEW: FILING PROCESS (col V) — manual office tracking dropdown.
+    sheet.getRange(2, 22, lastRow - 1, 1).setDataValidation(
+      SpreadsheetApp.newDataValidation().requireValueInList(FILING_PROCESS_OPTIONS).setAllowInvalid(false).build()
+    );
+
+    sheet.toast("Sab dropdowns (CLASS, CONSULTANT, FILING PROCESS samet) set ho gaye.", "✅ Dropdowns Ready", 5);
   } catch (error) {
     SpreadsheetApp.getUi().alert("Error", "❌ " + error.message, SpreadsheetApp.getUi().ButtonSet.OK);
   }
@@ -589,9 +758,10 @@ function processFormSubmission(data) {
     data.issueDate || "", data.expiryDate || "", data.appTrade || "",
     data.appAdd || "", data.year || "", data.conName || "", data.conAdd || "",
     "", // T - imageId filled after upload into client folder
-    data.noImg || "[NO IMAGE PROVIDED]"
+    data.noImg || "[NO IMAGE PROVIDED]",
+    "PENDING" // V - FILING PROCESS: har naye submission par default "PENDING", office staff manually update karta hai
   ];
-  sheet.getRange(lastRow, 1, 1, 21).setValues([rowValues]);
+  sheet.getRange(lastRow, 1, 1, 22).setValues([rowValues]);
 
   sheet.getRange(lastRow, 1).setValue("ON IT 👉");
   SpreadsheetApp.flush();

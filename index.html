@@ -228,6 +228,35 @@
       color: #fff;
     }
 
+    /* NEW: sub-link chips — real clickable <a> tags inside a non-link card,
+       used where an entry has MORE THAN ONE destination (app + sheet). */
+    .tag-link {
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .tag-link:hover { transform: translateY(-1px); }
+
+    /* NEW: card wrapper for multi-link entries — same look as .menu-btn
+       but not itself a link (so it doesn't compete with the sub-links). */
+    .menu-card {
+      cursor: default;
+    }
+
+    /* NEW: "coming soon" placeholder entry (Journal Publishing Unit) */
+    .menu-btn.placeholder {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .menu-btn.placeholder:hover {
+      transform: none;
+      box-shadow: var(--shadow);
+    }
+    .tag-soon {
+      background: #888;
+      color: #fff;
+    }
+
     footer {
       text-align: center;
       padding: 18px;
@@ -252,78 +281,78 @@
   </nav>
 
   <div id="welcome">
-    <div class="welcome-stamp">CMS v1</div>
+    <div class="welcome-stamp">CMS v1.1</div>
     <h1 class="welcome-title">BRANDEX LAW ASSOCIATES CMS</h1>
     <p class="welcome-sub">Select a tool below. All data is written in CAPITAL letters.</p>
 
     <div class="menu-buttons">
 
-      <!-- 1 -->
-      <a class="menu-btn" href="trademark-application.html" onclick="playClick(this)">
+      <!-- 01: Trademark Application — TWO links (app + its Google Sheet) -->
+      <div class="menu-btn menu-card">
         <span class="btn-num">01</span>
         <div class="btn-content">
-          <span class="btn-label">Trademark™ Application</span>
-          <div class="btn-links"><span class="tag tag-live">Trademark Application Setup</span></div>
+          <span class="btn-label">Trademark™ Application Generator</span>
+          <div class="btn-links">
+            <a class="tag tag-live tag-link" href="trademark-application.html" onclick="playClick(this)">Open App</a>
+            <a class="tag tag-sheet tag-link" href="https://docs.google.com/spreadsheets/d/1u7oYu63G28y54byhOw-2KS3nlt7GrpmbkT3uKMX2b8M/edit?gid=1496727423#gid=1496727423" target="_blank" rel="noopener" onclick="playClick(this)">Google Sheet</a>
+          </div>
         </div>
-      </a>
+      </div>
 
-      <!-- 2 -->
-      <a class="menu-btn" href="https://brandexsheet.vercel.app/" target="_blank" rel="noopener" onclick="playClick(this)">
+      <!-- 02: Journal Publishing Unit — PLACEHOLDER, no link yet -->
+      <div class="menu-btn placeholder" title="Coming soon — not built yet">
         <span class="btn-num">02</span>
         <div class="btn-content">
-          <span class="btn-label">Database Record CMS</span>
-          <div class="btn-links"><span class="tag tag-deploy">Database Webview Application</span></div>
+          <span class="btn-label">Journal Publishing Unit</span>
+          <div class="btn-links"><span class="tag tag-soon">Coming Soon</span></div>
         </div>
-      </a>
+      </div>
 
-      <!-- 3 -->
-      <a class="menu-btn" href="https://docs.google.com/spreadsheets/d/1yu27k_3Z6cCJmcnQI52z1dIC52Zi9ZxaKlo9wJiNFiQ/edit?gid=229416165#gid=229416165" target="_blank" rel="noopener" onclick="playClick(this)">
+      <!-- 03: Database Record CMS — TWO links (app + its Google Sheet) -->
+      <div class="menu-btn menu-card">
         <span class="btn-num">03</span>
         <div class="btn-content">
-          <span class="btn-label">Database Google Sheet (View)</span>
-          <div class="btn-links"><span class="tag tag-sheet">Google Sheet Link</span></div>
+          <span class="btn-label">Database Record CMS</span>
+          <div class="btn-links">
+            <a class="tag tag-deploy tag-link" href="https://brandexsheet.vercel.app/" target="_blank" rel="noopener" onclick="playClick(this)">Open App</a>
+            <a class="tag tag-sheet tag-link" href="https://docs.google.com/spreadsheets/d/1yu27k_3Z6cCJmcnQI52z1dIC52Zi9ZxaKlo9wJiNFiQ/edit?gid=229416165#gid=229416165" target="_blank" rel="noopener" onclick="playClick(this)">Google Sheet</a>
+          </div>
         </div>
-      </a>
+      </div>
 
-      <!-- 4 -->
-      <a class="menu-btn" href="https://salary-report-generator.vercel.app/" target="_blank" rel="noopener" onclick="playClick(this)">
+      <!-- 04: Salary Logger — TWO links (app + its Google Sheet) -->
+      <div class="menu-btn menu-card">
         <span class="btn-num">04</span>
         <div class="btn-content">
           <span class="btn-label">Salary Logger</span>
-          <div class="btn-links"><span class="tag tag-deploy">Salary Reports & Management Form</span></div>
+          <div class="btn-links">
+            <a class="tag tag-deploy tag-link" href="https://salary-report-generator.vercel.app/" target="_blank" rel="noopener" onclick="playClick(this)">Open App</a>
+            <a class="tag tag-sheet tag-link" href="https://docs.google.com/spreadsheets/d/1sc8G95EXoc6ZxC73A8qwAP068O_Z6A19YvTkgpC84SI/edit?gid=1569630085#gid=1569630085" target="_blank" rel="noopener" onclick="playClick(this)">Google Sheet</a>
+          </div>
         </div>
-      </a>
+      </div>
 
-      <!-- 5 -->
-      <a class="menu-btn" href="https://docs.google.com/spreadsheets/d/1sc8G95EXoc6ZxC73A8qwAP068O_Z6A19YvTkgpC84SI/edit?gid=1569630085#gid=1569630085" target="_blank" rel="noopener" onclick="playClick(this)">
-        <span class="btn-num">05</span>
-        <div class="btn-content">
-          <span class="btn-label">Salary Google Sheet (View)</span>
-          <div class="btn-links"><span class="tag tag-sheet">Google Sheet Link</span></div>
-        </div>
-      </a>
-
-      <!-- 6 -->
+      <!-- 05: Ledger Consultants -->
       <a class="menu-btn" href="https://docs.google.com/spreadsheets/d/1tZqytFeYCnFCxVqJWTIUqJC8qwpop_J6IkuNwbr9nfw/edit?gid=236529280#gid=236529280" target="_blank" rel="noopener" onclick="playClick(this)">
-        <span class="btn-num">06</span>
+        <span class="btn-num">05</span>
         <div class="btn-content">
           <span class="btn-label">Ledger Consultants (Google Sheet)</span>
           <div class="btn-links"><span class="tag tag-sheet">Google Sheet Link</span></div>
         </div>
       </a>
 
-      <!-- 7 -->
+      <!-- 06: Ledger Personal -->
       <a class="menu-btn" href="https://docs.google.com/spreadsheets/d/1jsoevY_0tSrayxPNTZjRU5LBB9LKTFHa2hrDG57sc0k/edit?gid=1788212026#gid=1788212026" target="_blank" rel="noopener" onclick="playClick(this)">
-        <span class="btn-num">07</span>
+        <span class="btn-num">06</span>
         <div class="btn-content">
           <span class="btn-label">Ledger Personal (Google Sheet)</span>
           <div class="btn-links"><span class="tag tag-sheet">Google Sheet Link</span></div>
         </div>
       </a>
 
-      <!-- 8 -->
+      <!-- 07: Document Enhancer -->
       <a class="menu-btn" href="https://0utlawzz.github.io/Document-Enhancer/" target="_blank" rel="noopener" onclick="playClick(this)">
-        <span class="btn-num">08</span>
+        <span class="btn-num">07</span>
         <div class="btn-content">
           <span class="btn-label">Tools: Document Enhancer</span>
           <div class="btn-links"><span class="tag tag-tool">Web Application</span></div>
@@ -333,7 +362,7 @@
     </div>
   </div>
 
-  <footer>Brandex Law Associates · CMS</footer>
+  <footer>Brandex Law Associates · CMS · v1.1.0</footer>
 
   <script>
     function playClick(el) {

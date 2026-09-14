@@ -1,6 +1,6 @@
 # Brandex Mail Merge
 
-![Version](https://img.shields.io/badge/version-1.0.0-0D9970)
+![Version](https://img.shields.io/badge/version-1.1.0-0D9970)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Status](https://img.shields.io/badge/status-production-C94A00)
 

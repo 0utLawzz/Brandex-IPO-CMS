@@ -6,6 +6,69 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.2.0] — 2026-09-14
+
+### 🚀 New Features
+
+- **Record View Web Interface**: Added new `records.html` page for viewing trademark application records in a clean table format
+- **Required Field Validation**: Enhanced form validation to prevent document generation with empty critical fields
+- **Social Assets Management**: Added social media assets directory to gitignore and documentation
+
+### ✨ Enhancements
+
+- **Extended Required Fields**: Made additional fields mandatory for data quality:
+  - Trademark Number (previously optional)
+  - E-Stamp Issue Date
+  - Business Name / Trading As
+  - USING Year / Since
+  - Fallback Text
+  - Consultant Name (with flexible dropdown/manual entry)
+
+- **UI Improvements**:
+  - Added "Record View" button with distinct theme color (yellow/accent3)
+  - Enhanced button styling with new `.btn-theme` class
+  - Color-coded status rows in Record View (DONE=green, ERROR=red, PENDING=yellow, etc.)
+
+- **Backend Capabilities**:
+  - Added `getRecordsForView()` function to retrieve filtered record data
+  - Updated `doPost()` to handle `getRecords` action for Record View
+  - Records sorted by date (newest first) for better UX
+
+### 📝 Documentation
+
+- Updated README.md with Social section
+- Enhanced index.html to include Record View link in Trademark Application section
+- Added comprehensive field validation error messages
+
+### 🔧 Technical
+
+- Fixed duplicate Issue Date display in trademark form (removed redundant readonly field)
+- Improved client-side validation logic with special handling for consultant selection
+- Enhanced form submission validation to catch empty fields before API calls
+
+---
+
+[1.2.0]: https://github.com/0utLawzz/Brandex-MailMerge/releases/tag/v1.2.0
+[1.1.0]: https://github.com/0utLawzz/Brandex-MailMerge/releases/tag/v1.1.0
+
+## [1.1.0] — 2026-09-14
+
+### 🚀 Maintenance Release
+
+This release includes bug fixes, markdown linting improvements, and UI enhancements.
+
+### Fixed
+
+- **Duplicate Issue Date Display**: Removed redundant readonly text field, now only datetime picker shown
+- **Markdown Linting Issues**: Fixed table formatting and code block spacing in CHANGELOG.md and CONTRIBUTING.md
+
+### ✨ Enhancements
+
+- **Improved Markdown Compliance**: Added proper spacing around code blocks, headings, and lists
+- **Better Code Documentation**: Added language specification to code blocks (bash)
+
+---
+
 ## [1.0.0] — 2026-09-14
 
 ### 🚀 First Stable Release
@@ -127,6 +190,7 @@ retyping of client data across TM-1 and TM-48 official forms.
 |----------------------------|----------------------------------------|----------------------------------|
 | `Brandex-MailMerge-Full.gs` | Google Apps Script (`Code.gs`)          | Backend                          |
 | `trademark-application.html` | GitHub Pages                           | Public web form                  |
+| `records.html`             | GitHub Pages                           | Record view web interface        |
 | `index.html`                | GitHub Pages                           | CMS home / links hub             |
 | `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE`, `CHANGELOG.md` | GitHub | Documentation |
 

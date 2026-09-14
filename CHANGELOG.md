@@ -123,11 +123,11 @@ retyping of client data across TM-1 and TM-48 official forms.
 
 ### Architecture
 
-| File | Location | Purpose |
-|------|----------|---------|
-| `Brandex-MailMerge-Full.gs` | Google Apps Script (`Code.gs`) | Backend |
-| `trademark-application.html` | GitHub Pages | Public web form |
-| `index.html` | GitHub Pages | CMS home / links hub |
+| File                       | Location                               | Purpose                          |
+|----------------------------|----------------------------------------|----------------------------------|
+| `Brandex-MailMerge-Full.gs` | Google Apps Script (`Code.gs`)          | Backend                          |
+| `trademark-application.html` | GitHub Pages                           | Public web form                  |
+| `index.html`                | GitHub Pages                           | CMS home / links hub             |
 | `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE`, `CHANGELOG.md` | GitHub | Documentation |
 
 ---

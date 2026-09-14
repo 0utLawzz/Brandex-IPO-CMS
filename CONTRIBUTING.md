@@ -11,10 +11,12 @@ There's no build step and no dependencies to install — this is deliberately
 kept simple (plain HTML/CSS/JS + a single Google Apps Script file).
 
 1. Clone the repo:
-   ```
+
+   ```bash
    git clone https://github.com/0utlawzz/Brandex-MailMerge.git
    cd Brandex-MailMerge
    ```
+
 2. See `README.md` → **Architecture: Which File Goes Where** before touching
    anything — Apps Script and GitHub Pages files look similar but deploy
    completely differently.
@@ -22,16 +24,20 @@ kept simple (plain HTML/CSS/JS + a single Google Apps Script file).
 ## Making a Change
 
 ### If you're changing the web form or the CMS home page
+
 Edit `trademark-application.html` or `index.html` directly, then:
-```
+
+```bash
 git add .
 git commit -m "Describe what changed and why"
 git push
 ```
+
 GitHub Pages redeploys automatically within a minute or two. Hard-refresh
 the live page to confirm.
 
 ### If you're changing backend logic (document generation, Drive/Sheet behavior)
+
 1. Edit `Brandex-MailMerge-Full.gs` **in this repo first** (so it stays the
    source of truth), then copy the entire file into the Apps Script
    editor's `Code.gs`.
@@ -44,7 +50,9 @@ the live page to confirm.
    never drift apart again.
 
 ### If you're changing `MAIN_FOLDER_ID`, `TM1_TEMPLATE_ID`, or `TM48_TEMPLATE_ID`
+
 These must match in exactly **two** places, every time:
+
 - The `⚙️ CONFIG` block at the top of `Brandex-MailMerge-Full.gs`
 - The `Config IDs` section in `README.md` (for humans checking later)
 
@@ -58,8 +66,10 @@ If you also changed the Apps Script **deployment URL**, update it in a
   `// NOTE:`, `// SECURITY:`. Older comments in this file are in Roman
   Urdu (written for the original non-developer maintainer) — leave those
   as historical context rather than rewriting them.
+
 - Keep configuration values in exactly one place (the CONFIG block) —
   duplicated IDs/URLs are how most of this project's past bugs happened.
+
 - `CLASS_DATA` and `CONSULTANT_DATA` are intentionally duplicated between
   `trademark-application.html` (runs in the browser) and
   `Brandex-MailMerge-Full.gs` (runs on Google's servers) — they can't share
@@ -70,6 +80,7 @@ If you also changed the Apps Script **deployment URL**, update it in a
 
 There's no automated test suite (a full test harness would be overkill for
 a tool this size). Manually verify instead:
+
 1. Submit one real-looking test application through the live form.
 2. Confirm in Drive: a single client folder was created (not a duplicate),
    containing the logo image, `TM-1`, and `TM-48`.

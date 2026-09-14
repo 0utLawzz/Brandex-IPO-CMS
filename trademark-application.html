@@ -411,11 +411,10 @@
           <div>
             <label>E-Stamp Issue Date <span class="hint">(defaults to now)</span></label>
             <input type="datetime-local" id="issueDatePicker" onchange="onIssueDateChange()" />
-            <input type="text" id="issueDate" readonly style="margin-top:6px;" />
           </div>
           <div>
             <label>E-Stamp Expiry Date <span class="hint">(auto = issue +7 days)</span></label>
-            <input type="text" id="expiryDate" readonly style="margin-top:23px;" />
+            <input type="text" id="expiryDate" readonly />
           </div>
           <div class="full">
             <label>Business Name / Trading As </label>
@@ -683,7 +682,6 @@
     function onIssueDateChange() {
       const picker = document.getElementById('issueDatePicker');
       const d = picker.value ? new Date(picker.value) : new Date();
-      document.getElementById('issueDate').value = formatDisplayDate(d);
       const expiry = new Date(d.getTime() + 7 * 24 * 60 * 60 * 1000);
       document.getElementById('expiryDate').value = formatDisplayDate(expiry);
     }
@@ -883,7 +881,7 @@
         appName: document.getElementById('appName').value.trim().toUpperCase(),
         appSo: document.getElementById('appSo').value.trim().toUpperCase(),
         appCnic: document.getElementById('appCnic').value.trim().toUpperCase(),
-        issueDate: document.getElementById('issueDate').value.trim().toUpperCase(),
+        issueDate: formatDisplayDate(document.getElementById('issueDatePicker').value ? new Date(document.getElementById('issueDatePicker').value) : new Date()).toUpperCase(),
         expiryDate: document.getElementById('expiryDate').value.trim().toUpperCase(),
         appTrade: document.getElementById('appTrade').value.trim().toUpperCase(),
         appAdd: document.getElementById('appAdd').value.trim().toUpperCase(),

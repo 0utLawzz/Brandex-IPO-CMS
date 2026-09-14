@@ -265,6 +265,10 @@
       background: var(--panel);
       color: var(--black);
     }
+    .btn-theme {
+      background: var(--accent3);
+      color: var(--black);
+    }
     #status {
       margin-top: 16px;
       padding: 13px 15px;
@@ -353,7 +357,10 @@
   <div class="page">
     <div class="page-header">
       <h1>Trademark Application v1.1 </h1>
-      <a class="back-btn" href="index.html">← Back to CMS</a>
+      <div style="display:flex; gap:12px;">
+        <a class="back-btn btn-theme" href="records.html">Record View</a>
+        <a class="back-btn" href="index.html">← Back to CMS</a>
+      </div>
     </div>
 
     <form id="tmForm">
@@ -365,8 +372,8 @@
             <input type="text" id="folder" required placeholder="HUSNA BEAUTY SOAP" />
           </div>
           <div>
-            <label>Trademark Number </label>
-            <input type="text" id="tm" placeholder="OPTIONAL" />
+            <label>Trademark Number <span class="req">*</span></label>
+            <input type="text" id="tm" required placeholder="REQUIRED" />
           </div>
           <div>
             <label>Class <span class="req">*</span></label>
@@ -409,24 +416,24 @@
             <input type="text" id="appCnic" placeholder="37405-123457-9 Format" />
           </div>
           <div>
-            <label>E-Stamp Issue Date <span class="hint">(defaults to now)</span></label>
-            <input type="datetime-local" id="issueDatePicker" onchange="onIssueDateChange()" />
+            <label>E-Stamp Issue Date <span class="req">*</span></label>
+            <input type="datetime-local" id="issueDatePicker" required onchange="onIssueDateChange()" />
           </div>
           <div>
             <label>E-Stamp Expiry Date <span class="hint">(auto = issue +7 days)</span></label>
             <input type="text" id="expiryDate" readonly />
           </div>
           <div class="full">
-            <label>Business Name / Trading As </label>
-            <input type="text" id="appTrade" />
+            <label>Business Name / Trading As <span class="req">*</span></label>
+            <input type="text" id="appTrade" required />
           </div>
           <div class="full">
             <label>Applicant Address</label>
             <textarea id="appAdd" rows="2"></textarea>
           </div>
           <div>
-            <label>USING Year / Since <span class="hint">(pick or type any year)</span></label>
-            <input type="text" id="year" list="yearList" placeholder="E.G. 2026" />
+            <label>USING Year / Since <span class="req">*</span></label>
+            <input type="text" id="year" list="yearList" required placeholder="E.G. 2026" />
             <datalist id="yearList">
               <option value="2020"></option>
               <option value="2021"></option>
@@ -453,7 +460,7 @@
           </div>
           <div>
             <div class="label-row">
-              <label>Consultant Name</label>
+              <label>Consultant Name <span class="req">*</span></label>
               <button type="button" class="edit-btn" id="conEditBtn" onclick="toggleConEdit()">✏️ Edit</button>
             </div>
             <input type="text" id="conName" readonly />
@@ -474,8 +481,8 @@
           <img id="preview" class="preview" alt="Preview" />
         </div>
         <div style="margin-top:12px;">
-          <label>Fallback Text (If No Image)</label>
-          <input type="text" id="noImg" value="[Text Here]" />
+          <label>Fallback Text (If No Image) <span class="req">*</span></label>
+          <input type="text" id="noImg" required value="[Text Here]" />
         </div>
       </div>
 
@@ -863,6 +870,36 @@
 
     document.getElementById('tmForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Client-side validation for required fields
+      const requiredFields = [
+        { id: 'folder', name: 'Application / Mark Name' },
+        { id: 'tm', name: 'Trademark Number' },
+        { id: 'classNo', name: 'Class' },
+        { id: 'appName', name: 'Applicant Name' },
+        { id: 'issueDatePicker', name: 'E-Stamp Issue Date' },
+        { id: 'appTrade', name: 'Business Name / Trading As' },
+        { id: 'year', name: 'USING Year / Since' },
+        { id: 'noImg', name: 'Fallback Text' }
+      ];
+
+      // Special validation for consultant name (either dropdown or manual entry)
+      const conSelect = document.getElementById('conSelect');
+      const conName = document.getElementById('conName');
+      if ((!conSelect.value || conSelect.value.trim() === '') && (!conName.value || conName.value.trim() === '')) {
+        showStatus('❌ Error: Consultant Name is required (select from dropdown or type manually)', 'error');
+        conSelect.focus();
+        return;
+      }
+
+      for (const field of requiredFields) {
+        const element = document.getElementById(field.id);
+        if (!element.value || element.value.trim() === '') {
+          showStatus(`❌ Error: ${field.name} is required`, 'error');
+          element.focus();
+          return;
+        }
+      }
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Generating...';

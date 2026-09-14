@@ -727,6 +727,14 @@ function doPost(e) {
       });
     }
 
+    if (body.action === "getRecords") {
+      var records = getRecordsForView();
+      return jsonResponse({
+        ok: true,
+        records: records
+      });
+    }
+
     return jsonResponse({ ok: false, error: "Unknown action" });
   } catch (err) {
     return jsonResponse({ ok: false, error: String(err.message || err) });
@@ -790,6 +798,42 @@ function processFormSubmission(data) {
     tm48Url: processResult.tm48Url,
     imageWarning: processResult.imageWarning // FIX: forward to doPost()
   };
+}
+
+function getRecordsForView() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Sheet1");
+  if (!sheet) throw new Error("Sheet1 not found");
+
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return []; // No data rows
+
+  // Get all data from the sheet (columns A-V: 1-22)
+  var dataRange = sheet.getRange(2, 1, lastRow - 1, 22);
+  var data = dataRange.getValues();
+
+  var records = [];
+  for (var i = 0; i < data.length; i++) {
+    var row = data[i];
+    // Map columns to the record view fields
+    // A=STATUS, B=STAGE, C=SR NO, D=TM-NO, E=NAME, F=DATE L, G=CLASS, H=CLASS-DESC, I=APP-TYPE, J=APP-NAME, K=APP-SO, L=APP-CNIC, M=ISSUE-DATE, N=EXPIRY-DATE, O=APP-TRADE, P=APP-ADD, Q=YEAR, R=CON-NAME, S=CON-ADD, T=IMG, U=NO-IMG, V=FILING PROCESS
+    records.push({
+      status: row[0] || "",
+      folder: row[4] || "",
+      tm: row[3] || "",
+      classNo: row[6] || "",
+      appName: row[9] || "",
+      appTrade: row[14] || "",
+      year: row[16] || "",
+      conName: row[17] || "",
+      noImg: row[20] || "",
+      filingProcess: row[21] || "",
+      date: row[12] || "" // ISSUE-DATE (column M, index 12)
+    });
+  }
+
+  // Sort by date (newest first) - reverse the array
+  return records.reverse();
 }
 
 function processRowAndReturnLinks(sheet, row, mainFolderId, tm1TemplateId, tm48TemplateId, formData) {

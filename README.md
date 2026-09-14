@@ -154,6 +154,11 @@ deployed safely.
 See [SECURITY.md](SECURITY.md) for how to report a security issue —
 this project handles confidential, not-yet-filed client trademark data.
 
+## Social
+
+This project includes social media preview assets in the `social` directory
+(e.g., `social-preview.png`) for promotional purposes.
+
 ## License
 
 [MIT](LICENSE) © 2026 Brandex Law Associates

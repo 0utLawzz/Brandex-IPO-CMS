@@ -186,7 +186,7 @@
 <body>
   <nav class="navbar">
     <div class="logo-text">BRANDEX <span>LAW</span> ASSOCIATES</div>
-    <div class="nav-right">RECORD VIEW v1.3 — NEW SHEET DATA</div>
+    <div class="nav-right">RECORD VIEW v1.4 — TM RECORDS</div>
   </nav>
 
   <div class="page">
@@ -200,9 +200,9 @@
     </div>
 
     <div class="card">
-      <div class="section-title">Trademark Application Records (New Sheet — 672 entries)</div>
+      <div class="section-title">Trademark Application Records (672 entries)</div>
       <div id="recordsContainer">
-        <div class="loading">Loading records from new sheet data...</div>
+        <div class="loading">Loading records...</div>
       </div>
     </div>
   </div>
@@ -275,12 +275,12 @@
     async function loadRecords() {
       const container = document.getElementById('recordsContainer');
       try {
-        const resp = await fetch('records-data.json');
-        if (!resp.ok) throw new Error('Failed to load records-data.json');
+        const resp = await fetch('tm-records.json');
+        if (!resp.ok) throw new Error('Failed to load tm-records.json');
         ALL_RECORDS = await resp.json();
         renderTable(ALL_RECORDS);
       } catch (err) {
-        container.innerHTML = `<div class="error">Error loading data: ${err.message}<br>Make sure records-data.json is present.</div>`;
+        container.innerHTML = `<div class="error">Error loading data: ${err.message}<br>Make sure tm-records.json is uploaded to the repo.</div>`;
       }
     }
 
